@@ -1,7 +1,7 @@
 from typing import Optional
 from enum import Enum, IntEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 
 class Status(str, Enum):
     pending = "pending"
@@ -29,8 +29,8 @@ class Permission(str, Enum):
 
 class User(BaseModel):
     id: Optional[int] = None
-    username: str
-    email: str
-    password: str
+    username: str = Field(min_length=3, max_length=50, pattern=r"^[A-Za-z0-9_.-]+$")
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
     role: Optional[Role] = Role.user
     
