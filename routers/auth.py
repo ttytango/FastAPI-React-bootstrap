@@ -11,9 +11,7 @@ from auth.auth_endpoints import (
 )
 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from dependencies import get_db_dependency
-from sqlalchemy.orm import Session
-from models.user import User
+
 
 router = APIRouter()
 
@@ -23,12 +21,7 @@ router = APIRouter()
 async def read_users_me(current_user: dict = Depends(get_current_active_user)):
     return current_user
 
-@router.get("/users/{user_id}")
-async def read_user(user_id: str, db: Session = Depends(get_db_dependency)):
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"user_id": user_id, "user": user}
+
 
 @router.get("/status")
 async def read_status():
