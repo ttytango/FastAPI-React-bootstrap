@@ -40,10 +40,10 @@ async def root():
     return {"message": "Hello World", "env": settings.environment, "debug": settings.debug}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/healthcheck")
+async def read_status():
+    return {"status": "ok"}
 
 
-app.include_router(auth_router)
-app.include_router(users_router, prefix="/users")
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(users_router, prefix="/users", tags=["users"])

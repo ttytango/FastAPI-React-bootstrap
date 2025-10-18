@@ -1,3 +1,4 @@
+from typing import Optional
 from enum import Enum, IntEnum
 
 from pydantic import BaseModel
@@ -27,9 +28,9 @@ class Permission(str, Enum):
     delete = "delete"
 
 class User(BaseModel):
-    id: int
+    id: Optional[int] = None
     username: str
     email: str
     password: str
-    role: Role
+    role: Optional[Role] = Role.user
     
