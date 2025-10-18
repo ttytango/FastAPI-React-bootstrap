@@ -17,11 +17,27 @@ username=johndoe&password=secret
 
 ###
 
-POST http://127.0.0.1:8000/users/
+POST http://127.0.0.1:8000/users
 Content-Type: application/json
 
 {
-  "username": "john_than",
-  "email": "jsaafdfas@e.com",
-  "password": "secret"
+  "username": "john_thansd",
+  "email": "jsaafdas@e.com",
+  "password": "secretthing"
 }
+
+###
+
+POST http://localhost:8000/auth/token/
+Content-Type: application/x-www-form-urlencoded
+
+username=john_than&password=secretthing
+
+# add access token from response here
+
+
+
+
+###
+GET http://localhost:8000/auth/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX3RoYW4iLCJleHAiOjE3NjA4MzE3ODd9.-x07T_r5JWsx61lG8ByAkYBX6_gMcx0ve53GFd5Muyc

@@ -9,11 +9,11 @@ from typing import Dict, Any
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    password = Column(String)
+    username = Column(String(50), unique=True, index=True, nullable=False)
+    email = Column(String(254), unique=True, index=True, nullable=False)
+    password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True)
-    role = Column(String, default=Role.user)
+    role = Column(String(16), nullable=False, default=Role.user.value)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
 
