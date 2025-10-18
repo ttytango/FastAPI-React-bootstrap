@@ -154,3 +154,6 @@ cython_debug/
 .idea/modules.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/vcs.xml
+
+
+frontend/node_modules/
