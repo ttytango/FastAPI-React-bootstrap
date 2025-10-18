@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import configure, get_settings
 from routers.auth import router as auth_router
+from routers.users import router as users_router
 from db import Base, setup_database, get_engine
 
 app = FastAPI()
@@ -45,3 +46,4 @@ async def say_hello(name: str):
 
 
 app.include_router(auth_router)
+app.include_router(users_router, prefix="/users")

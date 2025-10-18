@@ -1,36 +1,6 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 
-from auth.schema import User
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    },
-    "alice": {
-        "username": "alice",
-        "full_name": "Alice Wonderson",
-        "email": "alice@example.com",
-        "hashed_password": "fakehashedsecret2",
-        "disabled": True,
-    },
-}
-
-class UserInDB(User):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-    hashed_password: str | None = None
-
-def fake_hash_password(password: str):
-    return "fakehashed" + password
+from auth.schema import User, UserInDB, fake_users_db, fake_hash_password, fake_decode_token, oauth2_scheme
 
 
 def fake_decode_token(token):
