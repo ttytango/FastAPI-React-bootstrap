@@ -48,14 +48,3 @@ async def create_user(user: UserSchema, db: Session = Depends(get_db_dependency)
         raise HTTPException(status_code=409, detail="Username or email already exists")
     db.refresh(new_user)
     return new_user.to_dict()
-
- 
-
-# async def create_user(user: User):
-#     return {"user": user}
-
-# async def update_user(user_id: int, user: User):
-#     return {"user": user_id}
-
-# async def delete_user(user_id: int):
-#     return {"user": user_id}

@@ -11,13 +11,7 @@ configure()
 settings = get_settings()
 setup_database(settings.database_url)
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:8000",
-]
+origins = settings.cors_origins
 
 app.add_middleware(
     CORSMiddleware,
