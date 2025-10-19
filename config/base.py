@@ -37,8 +37,6 @@ class User(BaseModel):
     password: str
     role: Role
 
-# DATABASE_URL="mysql+pymysql://user:pass@localhost:3306/mydb?charset=utf8mb4"
-
 
 def set_database_url(url: str):
     load_dotenv()

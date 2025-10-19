@@ -1,9 +1,10 @@
+import json
 from sqlalchemy import Column, Integer, String, Boolean
 from pydantic import BaseModel
 from db import Base
 from datetime import datetime
 from sqlalchemy.types import DateTime
-from schemas.common import Role
+from schemas.common import Role, User as UserSchema
 from typing import Dict, Any
 
 class User(Base):
@@ -36,4 +37,28 @@ class User(Base):
         self.role = data.get("role")
         self.created_at = data.get("created_at")
         self.updated_at = data.get("updated_at")
+        return self
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def from_json(self, data: str):
+        self.from_dict(json.loads(data))
+        return self
+    
+    
+    def to_schema(self):
+        return UserSchema(
+            id=self.id,
+            username=self.username,
+            email=self.email,
+            password=self.password,
+            role=self.role,
+        )
+    
+    def from_schema(self, schema: UserSchema):
+        self.id = schema.id
+        self.username = schema.username
+        self.email = schema.email
+        self.role = schema.role
         return self
