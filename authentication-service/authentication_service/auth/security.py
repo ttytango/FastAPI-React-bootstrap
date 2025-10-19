@@ -12,7 +12,6 @@ from db import get_db
 from models.user import User as UserModel
 
 
-# Use pbkdf2_sha256 to avoid bcrypt backend issues and 72-byte limit
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

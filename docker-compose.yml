@@ -15,24 +15,66 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-  api:
-    build: .
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  auth-api:
+    build:
+      context: .
+      dockerfile: authentication-service/Dockerfile
     environment:
       ENVIRONMENT: development
       DATABASE_URL: mysql+pymysql://appuser:apppass@db:3306/appdb?charset=utf8mb4
       JWT_SECRET_KEY: change-me
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
-      DB_HOST: db
-      DB_PORT: 3306
+      APP_MODULE: authentication_service.main:app
     volumes:
-      - .:/app
+      - ./authentication-service/authentication_service:/app/authentication_service
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./schemas:/app/schemas
+      - ./auth:/app/auth
+      - ./db.py:/app/db.py
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
+
+  another-api:
+    build:
+      context: .
+      dockerfile: another-service/Dockerfile
+    volumes:
+      - ./another-service/another_service:/app/another_service
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./schemas:/app/schemas
+      - ./auth:/app/auth
+      - ./db.py:/app/db.py
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: mysql+pymysql://appuser:apppass@db:3306/appdb?charset=utf8mb4
+      JWT_SECRET_KEY: change-me
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      APP_MODULE: another_service.main:app
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000
+
 volumes:
   mysql_data:
 
