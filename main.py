@@ -1,11 +1,49 @@
-from fastapi import FastAPI
+import logging
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette import status
+from starlette.responses import JSONResponse
 from config import configure, get_settings
 from routers.auth import router as auth_router
 from routers.users import router as users_router
 from db import Base, setup_database, get_engine
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    import models.user  # ensure models are imported/registered
+    Base.metadata.create_all(bind=get_engine())
+    yield
+    # shutdown (optional)
+    # e.g., close db pools, flush metrics, etc.
+
+
 app = FastAPI()
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
+    """
+    Handle request validation errors and return a JSON response with the errors
+    """
+    msgs = [e.get("msg", "Invalid input") for e in exc.errors()]
+    msg = "; ".join(msgs)
+    if msg.startswith("Value error, "):
+        msg = msg[len("Value error, "):]
+
+    # Log sanitized info (no ctx/error object)
+    logger.warning("422 %s -> %s", request.url.path, msg)
+
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": msg},
+    )
 
 configure()
 settings = get_settings()
@@ -22,12 +60,6 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-def on_startup() -> None:
-    # Ensure all SQLAlchemy models are registered before this import
-    # Import models so they are registered with Base metadata
-    import models.user  # noqa: F401
-    Base.metadata.create_all(bind=get_engine())
 
 @app.get("/")
 async def root():

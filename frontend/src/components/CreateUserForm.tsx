@@ -17,8 +17,9 @@ export default function CreateUserForm() {
       await createUser({ username, email, password, role: 'user' })
       toast.success('Success', 'User created. Now login.')
     } catch (err: any) {
-      setError(err.message.detail ?? 'Failed to create user')
-      toast.error('Failed to create user', err.message.detail)
+      const msg = err?.detail ?? err?.message ?? 'Failed to create user'
+      setError(msg)
+      toast.error('Failed to create user', msg)
     }
   }
 

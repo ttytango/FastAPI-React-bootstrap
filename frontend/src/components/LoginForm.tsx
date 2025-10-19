@@ -20,8 +20,9 @@ export default function LoginForm() {
       setToken(res.access_token)
       toast.success('Logged in', 'Token acquired')
     } catch (err: any) {
-      setError(err.message ?? 'Login failed')
-      toast.error('Login failed', err.message)
+      const msg = err?.detail ?? err?.message ?? 'Login failed'
+      setError(msg)
+      toast.error('Login failed', msg)
     }
   }
 

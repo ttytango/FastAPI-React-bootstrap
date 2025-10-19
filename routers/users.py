@@ -25,14 +25,17 @@ async def get_user(user_id: int, db: Session = Depends(get_db_dependency)):
 @router.post("/")
 async def create_user(user: UserSchema, db: Session = Depends(get_db_dependency)):
     # Pre-check unique constraints for clearer API errors
+    existing_user = None
     existing_by_username = db.query(UserModel).filter(UserModel.username == user.username).first()
+    
     if existing_by_username:
-        raise HTTPException(status_code=409, detail="Username already exists")
-    if user.email:
-        existing_by_email = db.query(UserModel).filter(UserModel.email == user.email).first()
-        if existing_by_email:
-            raise HTTPException(status_code=409, detail="Email already exists")
-
+        existing_user = existing_by_username
+    elif user.email:
+        existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
+        
+    if existing_user:
+        raise HTTPException(status_code=409, detail="Username or email already exists")
+        
     new_user = UserModel(
         username=user.username,
         email=user.email,

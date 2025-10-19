@@ -15,7 +15,8 @@ export default function MePanel() {
       const data = await getMe(token)
       setMe(data)
     } catch (err: any) {
-      toast.error('Failed', err.message)
+      const msg = err?.detail ?? err?.message ?? 'Failed to fetch user information'
+      toast.error('Failed', msg)
     }
   }
 
