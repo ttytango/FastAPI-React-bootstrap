@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     # e.g., close db pools, flush metrics, etc.
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
