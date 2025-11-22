@@ -1,4 +1,4 @@
-import { RecoilRoot } from 'recoil'
+ 
 import CreateUserForm from './components/CreateUserForm'
 import LoginForm from './components/LoginForm'
 import TokenDisplay from './components/TokenDisplay'
@@ -8,10 +8,14 @@ import ToastContainer from './components/ToastContainer'
 import Sidebar from './components/Sidebar'
 import RightSidebar from './components/RightSidebar'
 import React from 'react'
+import TodoPanel from './components/TodoPanel'
+import { useRecoilValue } from 'recoil'
+import { isAuthenticatedState } from './state/auth'
 
 function App() {
+  const authed = useRecoilValue(isAuthenticatedState)
   return (
-    <RecoilRoot>
+    <>
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-center items-center">
           <h1 className="text-center text-2xl font-bold">Auth Dashboard</h1>
@@ -25,12 +29,13 @@ function App() {
             <div className="tile p-4 w-full"><CreateUserForm /></div>
             <div className="tile p-4 w-full"><LoginForm /></div>
             <div className="tile p-4 w-full md:col-span-2 xl:col-span-3"><MePanel /></div>
+            {authed && <div className="tile p-4 w-full md:col-span-2 xl:col-span-3"><TodoPanel /></div>}
           </div>
         </main>
         <RightSidebar />
       </div>
       <ToastContainer />
-    </RecoilRoot>
+      </>
   )
 }
 

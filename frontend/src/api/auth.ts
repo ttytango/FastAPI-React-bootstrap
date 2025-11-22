@@ -8,11 +8,11 @@ export async function createUser(body: {username: string; email: string; passwor
 
 export async function login(username: string, password: string): Promise<TokenResponse> {
   const form = new URLSearchParams({ username, password });
-  return api('/auth/token/', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body: form.toString() });
+  return api('/auth/token', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body: form.toString() });
 }
 
 export async function getMe(token: string) {
-  return api('/auth/users/me/', { headers: { Authorization: `Bearer ${token}` }});
+  return api('/auth/users/me', { headers: { Authorization: `Bearer ${token}` }});
 }
 
 

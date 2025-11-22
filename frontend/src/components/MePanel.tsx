@@ -25,7 +25,9 @@ export default function MePanel() {
       <h2 className="text-lg font-semibold mb-4">3) Me</h2>
       <Button onClick={handleFetch} disabled={!token}>Fetch Me</Button>
       {me && (
-        <pre className="mt-4 bg-gray-50 p-4 rounded-md">{JSON.stringify(me, null, 2)}</pre>
+        <pre className="mt-4 bg-gray-50 p-4 rounded-md overflow-auto max-h-80 whitespace-pre-wrap break-words">
+          {JSON.stringify(me, null, 2)}
+        </pre>
       )}
     </section>
   )
