@@ -4,6 +4,7 @@ from fastapi import Depends
 from config import configure, get_settings 
 from models.user import User as UserModel
 from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from dependencies import get_db_dependency, get_current_user
 from another_service.schemas.todos import TodoCreate, TodoOut
 from contextlib import asynccontextmanager
@@ -24,6 +25,15 @@ app = FastAPI(title="Another API", lifespan=lifespan, dependencies=[Depends(get_
 
 configure()
 settings = get_settings()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.get("/ping")
@@ -54,3 +64,8 @@ async def get_todo(
     if not todo:
         raise HTTPException(status_code=404, detail="Todo not found")
     return todo.to_schema()
+
+@app.get('/todos', response_model=list[TodoOut])
+async def get_todos(db: Session = Depends(get_db_dependency), user: UserModel = Depends(get_current_user)):
+    todos = db.query(Todo).filter(Todo.user_id == user.id).all()
+    return [todo.to_schema() for todo in todos]
